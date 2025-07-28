@@ -320,6 +320,93 @@
             font-style: italic;
         }
 
+        /* Efeitos especiais para Mileversário */
+        .mileversario-celebration {
+            position: relative;
+            background: linear-gradient(45deg, #f59e0b, #d97706) !important;
+            animation: mileversario-glow 2s ease-in-out infinite alternate;
+            border: 3px solid #fbbf24;
+            box-shadow: 0 0 30px rgba(245, 158, 11, 0.6);
+        }
+
+        @keyframes mileversario-glow {
+            from { 
+                box-shadow: 0 0 30px rgba(245, 158, 11, 0.6);
+                transform: scale(1);
+            }
+            to { 
+                box-shadow: 0 0 50px rgba(245, 158, 11, 0.9);
+                transform: scale(1.02);
+            }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .confetti.red { background: #dc2626; }
+        .confetti.yellow { background: #f59e0b; }
+        .confetti.blue { background: #2563eb; }
+        .confetti.green { background: #059669; }
+        .confetti.purple { background: #7c3aed; }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .firework {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            z-index: 9998;
+            pointer-events: none;
+        }
+
+        @keyframes firework-explosion {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+
+        .celebration-banner {
+            background: linear-gradient(45deg, #f59e0b, #d97706);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            animation: celebration-pulse 1.5s ease-in-out infinite;
+            box-shadow: 0 5px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        @keyframes celebration-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 20px;
@@ -470,6 +557,9 @@
             const daysInCurrentMilleadio = daysLived % 1000;
             const daysToNextMilleadio = 1000 - daysInCurrentMilleadio;
 
+            // Verificar se é exatamente um Mileversário (múltiplo exato de 1000 dias)
+            const isExactMileversario = daysLived % 1000 === 0 && milleadiosCompleted > 0;
+
             // Calcular estatísticas adicionais
             const weeksLived = Math.floor(daysLived / 7);
             const monthsLived = Math.floor(daysLived / 30.44); // Média de dias por mês
@@ -478,31 +568,42 @@
 
             // Mostrar estatísticas principais
             document.getElementById('mainStats').innerHTML = `
-                <div class="stat-card">
+                <div class="stat-card ${isExactMileversario ? 'mileversario-celebration' : ''}">
                     <h3>📊 Suas Estatísticas de Vida</h3>
                     <div class="stat-value">${daysLived.toLocaleString('pt-BR')}</div>
                     <div class="stat-label">dias vividos desde o nascimento</div>
                 </div>
-                <div class="stat-card">
-                    <h3>🎯 Mileádios Completados</h3>
+                <div class="stat-card ${isExactMileversario ? 'mileversario-celebration' : ''}">
+                    <h3>🎯 Mileversários Completados</h3>
                     <div class="stat-value">${milleadiosCompleted}</div>
                     <div class="stat-label">períodos de 1000 dias concluídos</div>
                 </div>
             `;
 
-            // Mostrar próximo mileádio
-            const nextMilleadioDate = addDays(birthDate, (milleadiosCompleted + 1) * 1000);
-            const isClose = daysToNextMilleadio <= 30;
-            
-            document.getElementById('nextMilestone').innerHTML = `
-                <div class="milestone-card ${isClose ? 'close' : 'next'}">
-                    <h3>${isClose ? '🚨' : '⏳'} Próximo Mileádio</h3>
-                    <div class="stat-value">${milleadiosCompleted + 1}º</div>
-                    <p>Data: ${formatDate(nextMilleadioDate)}</p>
-                    <p><strong>${daysToNextMilleadio} dias restantes</strong></p>
-                    ${isClose ? '<p>🎉 Você está quase lá!</p>' : ''}
-                </div>
-            `;
+            // Mostrar próximo mileádio (ou celebração se for exato)
+            if (isExactMileversario) {
+                document.getElementById('nextMilestone').innerHTML = `
+                    <div class="milestone-card mileversario-celebration">
+                        <h3>🎊 MILEVERSÁRIO ESPECIAL! 🎊</h3>
+                        <div class="stat-value">${milleadiosCompleted}º</div>
+                        <p><strong>HOJE você completa exatamente ${milleadiosCompleted * 1000} dias de vida!</strong></p>
+                        <p>🎉 Este é seu ${milleadiosCompleted}º Mileversário! 🎉</p>
+                    </div>
+                `;
+            } else {
+                const nextMilleadioDate = addDays(birthDate, (milleadiosCompleted + 1) * 1000);
+                const isClose = daysToNextMilleadio <= 30;
+                
+                document.getElementById('nextMilestone').innerHTML = `
+                    <div class="milestone-card ${isClose ? 'close' : 'next'}">
+                        <h3>${isClose ? '🚨' : '⏳'} Próximo Mileversário</h3>
+                        <div class="stat-value">${milleadiosCompleted + 1}º</div>
+                        <p>Data: ${formatDate(nextMilleadioDate)}</p>
+                        <p><strong>${daysToNextMilleadio} dias restantes</strong></p>
+                        ${isClose ? '<p>🎉 Você está quase lá!</p>' : ''}
+                    </div>
+                `;
+            }
 
             // Estatísticas adicionais
             document.getElementById('additionalStats').innerHTML = `
@@ -606,10 +707,15 @@
 
             // Mensagem motivacional
             document.getElementById('motivationalMessage').innerHTML = `
-                <div class="motivational-message">
-                    ${getMotivationalMessage(milleadiosCompleted, daysToNextMilleadio)}
+                <div class="motivational-message ${isExactMileversario ? 'mileversario-celebration' : ''}">
+                    ${getMotivationalMessage(milleadiosCompleted, daysToNextMilleadio, isExactMileversario)}
                 </div>
             `;
+
+            // Iniciar celebração se for Mileversário exato
+            if (isExactMileversario) {
+                setTimeout(startMileversarioCelebration, 500);
+            }
 
             // Mostrar resultados
             resultsDiv.style.display = 'block';
