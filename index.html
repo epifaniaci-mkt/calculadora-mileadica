@@ -611,13 +611,13 @@
             resultsDiv.style.display = 'block';
         }
 
-        // Não calcular automaticamente - deixar em branco
+        // Calculadora inicia limpa - sem cálculo automático
         window.onload = function() {
-            // Calculadora inicia limpa
+            // Não faz nada - aguarda o usuário clicar no botão
         };
 
-        // Calcular quando a data for alterada
-        document.getElementById('birthDate').addEventListener('change', calculateMilleadios);
+        // Remover o cálculo automático ao alterar data
+        // Agora só calcula quando clicar no botão
     </script>
 </body>
 </html>
