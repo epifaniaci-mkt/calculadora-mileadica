@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Mileádica - Mileversário</title>
+    <meta name="description" content="Descubra quantos períodos de 1000 dias (mileádios) você já viveu. Calculadora de marcos de vida únicos.">
+    <meta name="keywords" content="mileádio, mileversário, calculadora, marcos de vida, 1000 dias">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            width: 120px;
+            height: 80px;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .logo-svg {
+            width: 120px;
+            height: 80px;
+        }
+
+        .header h1 {
+            color: #dc2626;
+            font-size: 2.5em;
+            margin: 0;
+            background: linear-gradient(45deg, #dc2626, #991b1b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .input-section {
+            background: #f8f9ff;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 1.1em;
+        }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input[type="date"]:focus {
+            outline: none;
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .button {
+            background: linear-gradient(45deg, #dc2626, #991b1b);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(220, 38, 38, 0.3);
+        }
+
+        .results {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 5px solid #dc2626;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h3 {
+            color: #dc2626;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .milestone-card {
+            background: linear-gradient(45deg, #dc2626, #991b1b);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(220, 38, 38, 0.3);
+        }
+
+        .milestone-card.next {
+            background: linear-gradient(45deg, #dc2626, #991b1b);
+        }
+
+        .milestone-card.close {
+            background: linear-gradient(45deg, #dc2626, #991b1b);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .milestones-section {
+            background: linear-gradient(45deg, #dc2626, #991b1b);
+            border-radius: 15px;
+            padding: 0;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(220, 38, 38, 0.3);
+            overflow: hidden;
+        }
+
+        .milestones-section h3 {
+            color: white;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.4em;
+            background: linear-gradient(45deg, #dc2626, #991b1b);
+        }
+
+        .milestones-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+            background: white;
+        }
+
+        .milestones-table thead {
+            background: linear-gradient(45deg, #dc2626, #991b1b);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .milestones-table th {
+            color: white;
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1em;
+            border: none;
+        }
+
+        .milestones-table th:first-child {
+            border-radius: 0;
+        }
+
+        .milestones-table th:last-child {
+            border-radius: 0;
+        }
+
+        .milestones-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.95em;
+        }
+
+        .milestones-table tbody tr:hover {
+            background-color: #f7fafc;
+        }
+
+        .milestones-table tbody tr.current-milestone {
+            background-color: #fef2f2;
+            border-left: 4px solid #dc2626;
+        }
+
+        .milestone-number {
+            font-weight: bold;
+            color: #dc2626;
+        }
+
+        .milestone-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+            text-align: center;
+            display: inline-block;
+            min-width: 80px;
+        }
+
+        .milestone-status.completed {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .milestone-status.future {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .table-container {
+            background: white;
+            max-height: 400px;
+            overflow-y: auto;
+            border-radius: 0;
+            border: none;
+            margin: 0;
+        }
+
+        .error {
+            background: #fed7d7;
+            color: #742a2a;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 1px solid #feb2b2;
+        }
+
+        .additional-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .additional-stats .stat-card {
+            margin-bottom: 0;
+        }
+
+        .motivational-message {
+            background: linear-gradient(45deg, #dc2626, #991b1b);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.1em;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .additional-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .milestones-table {
+                font-size: 0.85em;
+            }
+            
+            .milestones-table th,
+            .milestones-table td {
+                padding: 8px 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <svg class="logo-svg" viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Arcos concêntricos - ajustados para melhor proporção -->
+                    <path d="M 5 65 A 55 55 0 0 1 115 65" fill="none" stroke="#dc2626" stroke-width="3"/>
+                    <path d="M 18 65 A 42 42 0 0 1 102 65" fill="none" stroke="#dc2626" stroke-width="3"/>
+                    <path d="M 30 65 A 30 30 0 0 1 90 65" fill="none" stroke="#dc2626" stroke-width="3"/>
+                    <path d="M 45 65 A 15 15 0 0 1 75 65" fill="none" stroke="#dc2626" stroke-width="3"/>
+                    
+                    <!-- Seta mais posicionada no arco externo -->
+                    <polygon points="85,20 95,30 85,40 82,37 88,31 82,25" fill="#dc2626"/>
+                    
+                    <!-- Faixa vermelha inferior -->
+                    <rect x="0" y="65" width="120" height="15" fill="#dc2626"/>
+                    <text x="60" y="76" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="12" font-weight="bold">Mileversário</text>
+                </svg>
+            </div>
+            <h1>Calculadora Mileádica</h1>
+        </div>
+        <div style="text-align: center; margin-bottom: 30px;">
+            <p style="color: #666; font-size: 1.1em;">Descubra quantos períodos de 1000 dias você já viveu!</p>
+        </div>
+
+        <div class="input-section">
+            <div class="input-group">
+                <label for="birthDate">Data de Nascimento:</label>
+                <input type="date" id="birthDate" value="">
+            </div>
+            <button class="button" onclick="calculateMilleadios()">Calcular Meus Mileádios</button>
+        </div>
+
+        <div id="results" class="results">
+            <div id="mainStats"></div>
+            <div id="nextMilestone"></div>
+            <div id="additionalStats" class="additional-stats"></div>
+            <div id="milestonesList"></div>
+            <div id="motivationalMessage"></div>
+        </div>
+
+        <div id="error" class="error" style="display: none;"></div>
+    </div>
+
+    <script>
+        // Definir a data atual
+        const today = new Date();
+        
+        function isValidDate(dateString) {
+            const date = new Date(dateString);
+            return date instanceof Date && !isNaN(date) && date <= today;
+        }
+
+        function formatDate(date) {
+            return date.toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+
+        function calculateDaysBetween(date1, date2) {
+            const timeDiff = Math.abs(date2.getTime() - date1.getTime());
+            return Math.floor(timeDiff / (1000 * 3600 * 24)) + 1; // +1 para incluir o dia de nascimento
+        }
+
+        function addDays(date, days) {
+            const result = new Date(date);
+            result.setTime(result.getTime() + ((days - 1) * 24 * 60 * 60 * 1000)); // -1 porque contamos o dia inicial
+            return result;
+        }
+
+        function getMotivationalMessage(milleadiosCompleted, daysToNext) {
+            const messages = [
+                "Cada dia é uma nova oportunidade de crescer! 🌱",
+                "Você já acumulou muita experiência de vida! 🌟",
+                "O tempo é o nosso bem mais precioso - você está aproveitando bem! ⏰",
+                "Cada mileádio representa mil momentos únicos! ✨",
+                "A vida é uma jornada incrível, e você está indo muito bem! 🚀"
+            ];
+
+            if (daysToNext <= 7) {
+                return "🎉 Uau! Você está a apenas " + daysToNext + " dias do seu próximo mileádio! Que emocionante!";
+            } else if (daysToNext <= 30) {
+                return "🔥 Faltam menos de 30 dias para seu próximo mileádio! A contagem regressiva começou!";
+            } else if (milleadiosCompleted >= 30) {
+                return "👑 Impressionante! Mais de 30 mileádios completados. Você é uma lenda viva!";
+            } else if (milleadiosCompleted >= 20) {
+                return "🎖️ Mais de 20 mileádios! Você acumulou uma sabedoria incrível ao longo dos anos!";
+            } else if (milleadiosCompleted >= 10) {
+                return "🏆 10+ mileádios completados! Você já viveu tantas experiências incríveis!";
+            }
+
+            return messages[Math.floor(Math.random() * messages.length)];
+        }
+
+        function calculateMilleadios() {
+            const birthDateInput = document.getElementById('birthDate').value;
+            const errorDiv = document.getElementById('error');
+            const resultsDiv = document.getElementById('results');
+
+            // Limpar erros anteriores
+            errorDiv.style.display = 'none';
+            resultsDiv.style.display = 'none';
+
+            if (!birthDateInput) {
+                errorDiv.textContent = 'Por favor, insira uma data de nascimento válida.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            const birthDate = new Date(birthDateInput);
+
+            if (!isValidDate(birthDateInput)) {
+                errorDiv.textContent = 'Data inválida. Por favor, insira uma data válida que não seja no futuro.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            // Calcular estatísticas principais
+            const daysLived = calculateDaysBetween(birthDate, today);
+            const milleadiosCompleted = Math.floor(daysLived / 1000);
+            const daysInCurrentMilleadio = daysLived % 1000;
+            const daysToNextMilleadio = 1000 - daysInCurrentMilleadio;
+
+            // Calcular estatísticas adicionais
+            const weeksLived = Math.floor(daysLived / 7);
+            const monthsLived = Math.floor(daysLived / 30.44); // Média de dias por mês
+            const yearsLived = Math.floor(daysLived / 365.25); // Considerando anos bissextos
+            const age = today.getFullYear() - birthDate.getFullYear();
+
+            // Mostrar estatísticas principais
+            document.getElementById('mainStats').innerHTML = `
+                <div class="stat-card">
+                    <h3>📊 Suas Estatísticas de Vida</h3>
+                    <div class="stat-value">${daysLived.toLocaleString('pt-BR')}</div>
+                    <div class="stat-label">dias vividos desde o nascimento</div>
+                </div>
+                <div class="stat-card">
+                    <h3>🎯 Mileádios Completados</h3>
+                    <div class="stat-value">${milleadiosCompleted}</div>
+                    <div class="stat-label">períodos de 1000 dias concluídos</div>
+                </div>
+            `;
+
+            // Mostrar próximo mileádio
+            const nextMilleadioDate = addDays(birthDate, (milleadiosCompleted + 1) * 1000);
+            const isClose = daysToNextMilleadio <= 30;
+            
+            document.getElementById('nextMilestone').innerHTML = `
+                <div class="milestone-card ${isClose ? 'close' : 'next'}">
+                    <h3>${isClose ? '🚨' : '⏳'} Próximo Mileádio</h3>
+                    <div class="stat-value">${milleadiosCompleted + 1}º</div>
+                    <p>Data: ${formatDate(nextMilleadioDate)}</p>
+                    <p><strong>${daysToNextMilleadio} dias restantes</strong></p>
+                    ${isClose ? '<p>🎉 Você está quase lá!</p>' : ''}
+                </div>
+            `;
+
+            // Estatísticas adicionais
+            document.getElementById('additionalStats').innerHTML = `
+                <div class="stat-card">
+                    <h3>📅 Idade</h3>
+                    <div class="stat-value">${age}</div>
+                    <div class="stat-label">anos completos</div>
+                </div>
+                <div class="stat-card">
+                    <h3>📆 Semanas</h3>
+                    <div class="stat-value">${weeksLived.toLocaleString('pt-BR')}</div>
+                    <div class="stat-label">semanas vividas</div>
+                </div>
+                <div class="stat-card">
+                    <h3>🗓️ Meses</h3>
+                    <div class="stat-value">${monthsLived.toLocaleString('pt-BR')}</div>
+                    <div class="stat-label">meses aproximados</div>
+                </div>
+                <div class="stat-card">
+                    <h3>📈 Progresso Atual</h3>
+                    <div class="stat-value">${daysInCurrentMilleadio}</div>
+                    <div class="stat-label">dias no mileádio atual</div>
+                </div>
+            `;
+
+            // Tabela de mileádios
+            let tableHTML = `
+                <div class="milestones-section">
+                    <h3 style="color: white;">🏆 Histórico de Mileádios (1º ao 35º)</h3>
+                    <div class="table-container">
+                        <table class="milestones-table">
+                            <thead style="background: linear-gradient(45deg, #dc2626, #991b1b);">
+                                <tr>
+                                    <th style="color: white;">Mileádio</th>
+                                    <th style="color: white;">Data</th>
+                                    <th style="color: white;">Idade</th>
+                                    <th style="color: white;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+            `;
+            
+            // Gerar linhas da tabela do 1º ao 35º mileádio
+            for (let i = 1; i <= 35; i++) {
+                const milleadioDate = addDays(birthDate, i * 1000);
+                const isCompleted = i <= milleadiosCompleted;
+                const isCurrent = i === milleadiosCompleted + 1;
+                
+                // Calcular idade aproximada na data do mileádio
+                const birthYear = birthDate.getFullYear();
+                const birthMonth = birthDate.getMonth();
+                const birthDay = birthDate.getDate();
+                
+                const milestoneYear = milleadioDate.getFullYear();
+                const milestoneMonth = milleadioDate.getMonth();
+                const milestoneDay = milleadioDate.getDate();
+                
+                let ageYears = milestoneYear - birthYear;
+                let ageMonths = milestoneMonth - birthMonth;
+                
+                // Ajustar se o dia ainda não chegou no mês
+                if (milestoneDay < birthDay) {
+                    ageMonths--;
+                }
+                
+                // Ajustar se os meses ficaram negativos
+                if (ageMonths < 0) {
+                    ageYears--;
+                    ageMonths += 12;
+                }
+                
+                const ageDisplay = ageMonths === 0 ? `${ageYears} anos` : 
+                    ageMonths === 1 ? `${ageYears} anos e ${ageMonths} mês` : 
+                    `${ageYears} anos e ${ageMonths} meses`;
+                
+                tableHTML += `
+                    <tr${isCurrent ? ' class="current-milestone"' : ''}>
+                        <td>
+                            <span style="font-weight: bold; color: #dc2626;">${i}º</span>
+                            ${isCurrent ? ' (Próximo)' : ''}
+                        </td>
+                        <td>${formatDate(milleadioDate)}</td>
+                        <td>${ageDisplay}</td>
+                        <td>
+                            <span class="milestone-status ${isCompleted ? 'completed' : 'future'}">
+                                ${isCompleted ? 'Concluído' : 'Futuro'}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            }
+            
+            tableHTML += `
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('milestonesList').innerHTML = tableHTML;
+
+            // Mensagem motivacional
+            document.getElementById('motivationalMessage').innerHTML = `
+                <div class="motivational-message">
+                    ${getMotivationalMessage(milleadiosCompleted, daysToNextMilleadio)}
+                </div>
+            `;
+
+            // Mostrar resultados
+            resultsDiv.style.display = 'block';
+        }
+
+        // Não calcular automaticamente - deixar em branco
+        window.onload = function() {
+            // Calculadora inicia limpa
+        };
+
+        // Calcular quando a data for alterada
+        document.getElementById('birthDate').addEventListener('change', calculateMilleadios);
+    </script>
+</body>
+</html>
