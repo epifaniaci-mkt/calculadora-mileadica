@@ -358,6 +358,18 @@
             left: 0;
         }
 
+        .footer-disclaimer {
+            text-align: center;
+            padding: 15px;
+            margin-top: 20px;
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        .footer-disclaimer em {
+            font-style: italic;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 20px;
@@ -421,6 +433,10 @@
         <div id="error" class="error" style="display: none;"></div>
     </div>
 
+    <div class="footer-disclaimer">
+        <p><em>Criado com Claude Sonnet 4.</em></p>
+    </div>
+
     <script>
         // Definir a data atual
         const today = new Date();
@@ -440,12 +456,12 @@
 
         function calculateDaysBetween(date1, date2) {
             const timeDiff = Math.abs(date2.getTime() - date1.getTime());
-            return Math.floor(timeDiff / (1000 * 3600 * 24)) + 1; // +1 para incluir o dia de nascimento
+            return Math.floor(timeDiff / (1000 * 3600 * 24)) + 1;
         }
 
         function addDays(date, days) {
             const result = new Date(date);
-            result.setTime(result.getTime() + ((days - 1) * 24 * 60 * 60 * 1000)); // -1 porque contamos o dia inicial
+            result.setTime(result.getTime() + ((days - 1) * 24 * 60 * 60 * 1000));
             return result;
         }
 
@@ -488,9 +504,11 @@
                 return;
             }
 
-            const birthDate = new Date(birthDateInput);
+            // Criar data corretamente para evitar problemas de fuso horário
+            const [year, month, day] = birthDateInput.split('-');
+            const birthDate = new Date(year, month - 1, day);
 
-            if (!isValidDate(birthDateInput)) {
+            if (!isValidDate(birthDateInput) || birthDate > today) {
                 errorDiv.textContent = 'Data inválida. Por favor, insira uma data válida que não seja no futuro.';
                 errorDiv.style.display = 'block';
                 return;
