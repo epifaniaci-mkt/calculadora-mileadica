@@ -7,6 +7,12 @@
     <meta name="description" content="Descubra quantos períodos de 1000 dias (mileádios) você já viveu. Calculadora de marcos de vida únicos.">
     <meta name="keywords" content="mileádio, mileversário, calculadora, marcos de vida, 1000 dias">
     
+    <!-- Favicon SVG do Mileversário -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23dc2626;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23991b1b;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='45' fill='url(%23grad)'/%3E%3Ctext x='50' y='40' font-family='Arial, sans-serif' font-size='28' font-weight='bold' text-anchor='middle' fill='white'%3E1000%3C/text%3E%3Ctext x='50' y='65' font-family='Arial, sans-serif' font-size='16' text-anchor='middle' fill='white'%3EDIAS%3C/text%3E%3C/svg%3E">
+    
+    <!-- Fallback para navegadores antigos -->
+    <link rel="shortcut icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23dc2626;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23991b1b;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='45' fill='url(%23grad)'/%3E%3Ctext x='50' y='40' font-family='Arial, sans-serif' font-size='28' font-weight='bold' text-anchor='middle' fill='white'%3E1000%3C/text%3E%3Ctext x='50' y='65' font-family='Arial, sans-serif' font-size='16' text-anchor='middle' fill='white'%3EDIAS%3C/text%3E%3C/svg%3E">
+    
     <style>
         * {
             margin: 0;
@@ -332,6 +338,7 @@
             text-align: center;
             font-size: 1.4em;
             background: linear-gradient(45deg, #dc2626, #991b1b);
+            border-radius: 15px 15px 0 0;
         }
 
         .milestones-table {
@@ -339,6 +346,12 @@
             border-collapse: collapse;
             margin: 0;
             background: var(--bg-white);
+            margin-top: -1px; /* Remove qualquer gap */
+            border: none;
+        }
+
+        .milestones-table * {
+            border-collapse: collapse;
         }
 
         .milestones-table thead {
@@ -680,7 +693,7 @@
     <div id="toast" class="toast"></div>
 
     <div class="footer-disclaimer">
-        <p><em>Criado com Claude Opus 4.1</em></p>
+        <p><em>Criado com Claude Opus 4.2</em></p>
     </div>
 
     <script>
@@ -970,19 +983,20 @@
             const totalPages = Math.ceil(allMilestones.length / rowsPerPage);
             
             let tableHTML = `
-                <div class="milestones-section">
-                    <h3 style="color: white;">🏆 Histórico de Mileádios (até o 40º)</h3>
-                    <div class="table-container">
-                        <table class="milestones-table">
-                            <thead style="background: linear-gradient(45deg, #dc2626, #991b1b);">
-                                <tr>
-                                    <th style="color: white;">Mileádio</th>
-                                    <th style="color: white;">Data</th>
-                                    <th style="color: white;">Idade</th>
-                                    <th style="color: white;">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                <div class="milestones-section" style="background: transparent; padding: 0; overflow: visible;">
+                    <div style="background: linear-gradient(45deg, #dc2626, #991b1b); border-radius: 15px 15px 0 0; padding: 20px; margin: 0;">
+                        <h3 style="color: white; margin: 0; text-align: center; font-size: 1.4em;">🏆 Histórico de Mileádios (até o 40º)</h3>
+                    </div>
+                    <table class="milestones-table" style="margin: 0; border-spacing: 0; border-radius: 0; border: none;">
+                        <thead style="background: linear-gradient(45deg, #dc2626, #991b1b); border: none;">
+                            <tr style="border: none;">
+                                <th style="color: white; border: none; padding: 15px 10px;">Mileádio</th>
+                                <th style="color: white; border: none; padding: 15px 10px;">Data</th>
+                                <th style="color: white; border: none; padding: 15px 10px;">Idade</th>
+                                <th style="color: white; border: none; padding: 15px 10px;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody style="border: none;">
             `;
             
             pageData.forEach(milestone => {
@@ -1006,8 +1020,7 @@
             tableHTML += `
                             </tbody>
                         </table>
-                    </div>
-                    <div class="table-pagination">
+                    <div class="table-pagination" style="margin: 0;">
                         <button class="pagination-button" 
                                 onclick="changePage(-1)" 
                                 ${currentPage === 1 ? 'disabled' : ''}>
