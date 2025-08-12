@@ -6,6 +6,7 @@
     <title>Calculadora Mileádica - Mileversário</title>
     <meta name="description" content="Descubra quantos períodos de 1000 dias (mileádios) você já viveu. Calculadora de marcos de vida únicos.">
     <meta name="keywords" content="mileádio, mileversário, calculadora, marcos de vida, 1000 dias">
+    
     <style>
         * {
             margin: 0;
@@ -13,18 +14,68 @@
             box-sizing: border-box;
         }
 
+        /* Variáveis CSS para modo escuro */
+        :root {
+            --bg-gradient-start: #dc2626;
+            --bg-gradient-end: #991b1b;
+            --text-primary: #333;
+            --bg-container: rgba(255, 255, 255, 0.95);
+            --bg-input: #f8f9ff;
+            --border-color: #e2e8f0;
+            --bg-white: white;
+            --text-secondary: #666;
+        }
+
+        /* Modo Escuro */
+        [data-theme="dark"] {
+            --text-primary: #f0f0f0;
+            --bg-container: rgba(30, 30, 30, 0.95);
+            --bg-input: #2a2a2a;
+            --border-color: #404040;
+            --bg-white: #2a2a2a;
+            --text-secondary: #aaa;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
             min-height: 100vh;
             padding: 20px;
-            color: #333;
+            color: var(--text-primary);
+        }
+
+        /* Botão de Modo Escuro */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        [data-theme="dark"] .theme-toggle {
+            background: rgba(60, 60, 60, 0.9);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
         }
 
         .container {
             max-width: 800px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
+            background: var(--bg-container);
             border-radius: 20px;
             padding: 30px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
@@ -70,16 +121,16 @@
         }
 
         .header p {
-            color: #666;
+            color: var(--text-secondary);
             font-size: 1.1em;
         }
 
         .input-section {
-            background: #f8f9ff;
+            background: var(--bg-input);
             padding: 25px;
             border-radius: 15px;
             margin-bottom: 30px;
-            border: 2px solid #e2e8f0;
+            border: 2px solid var(--border-color);
         }
 
         .input-group {
@@ -94,14 +145,24 @@
             font-size: 1.1em;
         }
 
+        [data-theme="dark"] label {
+            color: #cbd5e0;
+        }
+
         input[type="date"] {
             width: 100%;
             padding: 12px 15px;
-            border: 2px solid #e2e8f0;
+            border: 2px solid var(--border-color);
             border-radius: 10px;
             font-size: 1.1em;
             transition: all 0.3s ease;
             background: white;
+            color: #333;
+        }
+
+        [data-theme="dark"] input[type="date"] {
+            background: #1a1a1a;
+            color: #f0f0f0;
         }
 
         input[type="date"]:focus {
@@ -129,6 +190,44 @@
             box-shadow: 0 10px 20px rgba(220, 38, 38, 0.3);
         }
 
+        /* Barra de Progresso */
+        .progress-chart {
+            background: var(--bg-white);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 5px solid #dc2626;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 40px;
+            background: #f0f0f0;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            margin-top: 15px;
+        }
+
+        [data-theme="dark"] .progress-bar-container {
+            background: #1a1a1a;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(45deg, #dc2626, #991b1b);
+            border-radius: 20px;
+            transition: width 1s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 15px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
         .results {
             display: none;
             animation: fadeIn 0.5s ease-in;
@@ -140,7 +239,7 @@
         }
 
         .stat-card {
-            background: white;
+            background: var(--bg-white);
             padding: 20px;
             border-radius: 15px;
             margin-bottom: 20px;
@@ -161,8 +260,12 @@
             margin-bottom: 5px;
         }
 
+        [data-theme="dark"] .stat-value {
+            color: #e2e8f0;
+        }
+
         .stat-label {
-            color: #666;
+            color: var(--text-secondary);
             font-size: 0.9em;
         }
 
@@ -176,18 +279,41 @@
             box-shadow: 0 5px 15px rgba(220, 38, 38, 0.3);
         }
 
-        .milestone-card.next {
-            background: linear-gradient(45deg, #dc2626, #991b1b);
-        }
-
         .milestone-card.close {
-            background: linear-gradient(45deg, #dc2626, #991b1b);
             animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.02); }
+        }
+
+        /* Botões de Ação */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .action-button {
+            background: linear-gradient(45deg, #dc2626, #991b1b);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 38, 38, 0.3);
         }
 
         .milestones-section {
@@ -212,7 +338,7 @@
             width: 100%;
             border-collapse: collapse;
             margin: 0;
-            background: white;
+            background: var(--bg-white);
         }
 
         .milestones-table thead {
@@ -231,22 +357,19 @@
             border: none;
         }
 
-        .milestones-table th:first-child {
-            border-radius: 0;
-        }
-
-        .milestones-table th:last-child {
-            border-radius: 0;
-        }
-
         .milestones-table td {
             padding: 12px 10px;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid var(--border-color);
             font-size: 0.95em;
+            color: var(--text-primary);
         }
 
         .milestones-table tbody tr:hover {
             background-color: #f7fafc;
+        }
+
+        [data-theme="dark"] .milestones-table tbody tr:hover {
+            background-color: #374151;
         }
 
         .milestones-table tbody tr.current-milestone {
@@ -254,9 +377,8 @@
             border-left: 4px solid #dc2626;
         }
 
-        .milestone-number {
-            font-weight: bold;
-            color: #dc2626;
+        [data-theme="dark"] .milestones-table tbody tr.current-milestone {
+            background-color: #451a1a;
         }
 
         .milestone-status {
@@ -280,12 +402,50 @@
         }
 
         .table-container {
-            background: white;
-            max-height: 400px;
-            overflow-y: auto;
+            background: var(--bg-white);
+            max-height: none;
+            overflow-y: visible;
             border-radius: 0;
             border: none;
             margin: 0;
+        }
+
+        /* Paginação */
+        .table-pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: var(--bg-white);
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+        }
+
+        .pagination-button {
+            background: linear-gradient(45deg, #dc2626, #991b1b);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .pagination-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(220, 38, 38, 0.3);
+        }
+
+        .pagination-info {
+            color: var(--text-secondary);
+            font-size: 0.9em;
         }
 
         .error {
@@ -326,10 +486,14 @@
             background: rgba(255, 255, 255, 0.9);
             border-radius: 15px;
             margin-top: 20px;
-            color: #666;
+            color: var(--text-secondary);
             font-size: 0.95em;
             backdrop-filter: blur(10px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] .acknowledgments {
+            background: rgba(42, 42, 42, 0.9);
         }
 
         .acknowledgments h4 {
@@ -366,8 +530,55 @@
             font-size: 0.9em;
         }
 
-        .footer-disclaimer em {
-            font-style: italic;
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #333;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 2000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .theme-toggle,
+            .action-buttons,
+            .button,
+            .footer-disclaimer {
+                display: none !important;
+            }
+            
+            .container {
+                box-shadow: none;
+                background: white;
+                max-width: 100%;
+            }
+            
+            .milestones-table {
+                page-break-inside: avoid;
+            }
+            
+            .table-container {
+                max-height: none;
+                overflow: visible;
+            }
         }
 
         @media (max-width: 768px) {
@@ -375,34 +586,57 @@
                 padding: 20px;
                 margin: 10px;
             }
-            
+
             .header h1 {
                 font-size: 2em;
             }
-            
+
             .additional-stats {
                 grid-template-columns: 1fr;
             }
-            
+
             .milestones-table {
                 font-size: 0.85em;
             }
-            
+
             .milestones-table th,
             .milestones-table td {
                 padding: 8px 6px;
+            }
+
+            .theme-toggle {
+                width: 45px;
+                height: 45px;
+                font-size: 1.3em;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-button {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Botão de Modo Escuro -->
+    <button class="theme-toggle" aria-label="Alternar modo escuro" title="Alternar modo escuro">
+        <span id="theme-icon">🌙</span>
+    </button>
+
     <div class="container">
         <div class="header">
             <div class="logo">
-                <img src="https://raw.githubusercontent.com/epifaniaci-mkt/calculadora-mileadica/main/Logo%20Mileversa%CC%81rio.png" alt="Logo Mileversário" class="logo-img">
+                <img src="https://raw.githubusercontent.com/epifaniaci-mkt/calculadora-mileadica/main/Logo%20Mileversa%CC%81rio.png" 
+                     alt="Logo Mileversário" 
+                     class="logo-img">
             </div>
             <h1>Calculadora Mileádica</h1>
         </div>
+
         <div style="text-align: center; margin-bottom: 30px;">
             <p style="color: #666; font-size: 1.1em;">Descubra quantos períodos de 1000 dias você já viveu!</p>
         </div>
@@ -417,8 +651,17 @@
 
         <div id="results" class="results">
             <div id="mainStats"></div>
+            <div id="progressChart"></div>
             <div id="nextMilestone"></div>
             <div id="additionalStats" class="additional-stats"></div>
+            
+            <!-- Botões de Ação -->
+            <div class="action-buttons">
+                <button class="action-button" onclick="exportToCalendar()">
+                    📅 Add ao Calendário
+                </button>
+            </div>
+            
             <div id="milestonesList"></div>
             <div id="motivationalMessage"></div>
             <div id="acknowledgments" class="acknowledgments">
@@ -433,6 +676,9 @@
         <div id="error" class="error" style="display: none;"></div>
     </div>
 
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
     <div class="footer-disclaimer">
         <p><em>Criado com Claude Sonnet 4.</em></p>
     </div>
@@ -440,7 +686,50 @@
     <script>
         // Definir a data atual
         const today = new Date();
-        
+        let currentPage = 1;
+        const rowsPerPage = 10;
+        let allMilestones = [];
+        let userBirthDate = null;
+
+        // Função de Toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Funções de Tema
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            document.getElementById('theme-icon').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+            
+            showToast(`Modo ${newTheme === 'dark' ? 'escuro' : 'claro'} ativado`);
+        }
+
+        // Event listener para o botão de tema
+        document.querySelector('.theme-toggle').addEventListener('click', toggleTheme);
+
+        // Aplicar tema salvo ao carregar
+        window.addEventListener('load', function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('theme-icon').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+            
+            // Recuperar última data
+            const savedDate = localStorage.getItem('lastBirthDate');
+            if (savedDate) {
+                document.getElementById('birthDate').value = savedDate;
+            }
+        });
+
         function isValidDate(dateString) {
             const date = new Date(dateString);
             return date instanceof Date && !isNaN(date) && date <= today;
@@ -507,6 +796,7 @@
             // Criar data corretamente para evitar problemas de fuso horário
             const [year, month, day] = birthDateInput.split('-');
             const birthDate = new Date(year, month - 1, day);
+            userBirthDate = birthDate;
 
             if (!isValidDate(birthDateInput) || birthDate > today) {
                 errorDiv.textContent = 'Data inválida. Por favor, insira uma data válida que não seja no futuro.';
@@ -514,11 +804,15 @@
                 return;
             }
 
+            // Salvar data no localStorage
+            localStorage.setItem('lastBirthDate', birthDateInput);
+
             // Calcular estatísticas principais
             const daysLived = calculateDaysBetween(birthDate, today);
             const milleadiosCompleted = Math.floor(daysLived / 1000);
             const daysInCurrentMilleadio = daysLived % 1000;
             const daysToNextMilleadio = 1000 - daysInCurrentMilleadio;
+            const progressPercentage = (daysInCurrentMilleadio / 1000) * 100;
 
             // Calcular estatísticas adicionais
             const weeksLived = Math.floor(daysLived / 7);
@@ -540,10 +834,25 @@
                 </div>
             `;
 
+            // Mostrar gráfico de progresso
+            document.getElementById('progressChart').innerHTML = `
+                <div class="progress-chart">
+                    <h3>📊 Progresso no Mileádio Atual</h3>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: ${progressPercentage}%">
+                            ${progressPercentage.toFixed(1)}%
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px; color: #666; font-size: 0.9em;">
+                        ${daysInCurrentMilleadio} de 1000 dias completados
+                    </div>
+                </div>
+            `;
+
             // Mostrar próximo mileádio
             const nextMilleadioDate = addDays(birthDate, (milleadiosCompleted + 1) * 1000);
             const isClose = daysToNextMilleadio <= 30;
-            
+
             document.getElementById('nextMilestone').innerHTML = `
                 <div class="milestone-card ${isClose ? 'close' : 'next'}">
                     <h3>${isClose ? '🚨' : '⏳'} Próximo Mileádio</h3>
@@ -578,10 +887,91 @@
                 </div>
             `;
 
-            // Tabela de mileádios
+            // Gerar tabela de mileádios
+            generateMilestones(birthDate, milleadiosCompleted);
+
+            // Mensagem motivacional
+            document.getElementById('motivationalMessage').innerHTML = `
+                <div class="motivational-message">
+                    ${getMotivationalMessage(milleadiosCompleted, daysToNextMilleadio)}
+                </div>
+            `;
+
+            // Mostrar resultados
+            resultsDiv.style.display = 'block';
+
+            // Mostrar agradecimentos após os resultados
+            document.getElementById('acknowledgments').style.display = 'block';
+        }
+
+        function generateMilestones(birthDate, milleadiosCompleted) {
+            allMilestones = [];
+            
+            // Gerar dados de todos os mileádios (até 40)
+            for (let i = 1; i <= 40; i++) {
+                const milleadioDate = addDays(birthDate, i * 1000);
+                const isCompleted = i <= milleadiosCompleted;
+                const isCurrent = i === milleadiosCompleted + 1;
+                
+                // Calcular idade na data do mileádio
+                const birthYear = birthDate.getFullYear();
+                const birthMonth = birthDate.getMonth();
+                const birthDay = birthDate.getDate();
+                
+                const milestoneYear = milleadioDate.getFullYear();
+                const milestoneMonth = milleadioDate.getMonth();
+                const milestoneDay = milleadioDate.getDate();
+                
+                let ageYears = milestoneYear - birthYear;
+                let ageMonths = milestoneMonth - birthMonth;
+                
+                if (milestoneDay < birthDay) {
+                    ageMonths--;
+                }
+                
+                if (ageMonths < 0) {
+                    ageYears--;
+                    ageMonths += 12;
+                }
+                
+                const ageDisplay = ageMonths === 0 ? `${ageYears} anos` :
+                                  ageMonths === 1 ? `${ageYears} anos e ${ageMonths} mês` :
+                                  `${ageYears} anos e ${ageMonths} meses`;
+                
+                allMilestones.push({
+                    number: i,
+                    date: milleadioDate,
+                    age: ageDisplay,
+                    isCompleted: isCompleted,
+                    isCurrent: isCurrent
+                });
+            }
+            
+            // Calcular qual página contém o próximo mileádio
+            const nextMilestone = milleadiosCompleted + 1;
+            currentPage = Math.ceil(nextMilestone / rowsPerPage);
+            
+            // Garantir que currentPage seja válido
+            const totalPages = Math.ceil(allMilestones.length / rowsPerPage);
+            if (currentPage > totalPages) {
+                currentPage = totalPages;
+            }
+            if (currentPage < 1) {
+                currentPage = 1;
+            }
+            
+            renderMilestonesTable();
+        }
+
+        function renderMilestonesTable() {
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const endIndex = Math.min(startIndex + rowsPerPage, allMilestones.length);
+            const pageData = allMilestones.slice(startIndex, endIndex);
+            const totalPages = Math.ceil(allMilestones.length / rowsPerPage);
+            
             let tableHTML = `
                 <div class="milestones-section">
-                    <h3 style="color: white;">🏆 Histórico de Mileádios (1º ao 35º)</h3>
+                    <h3 style="color: white;">🏆 Histórico de Mileádios (até o 40º)</h3>
                     <div class="table-container">
                         <table class="milestones-table">
                             <thead style="background: linear-gradient(45deg, #dc2626, #991b1b);">
@@ -595,86 +985,164 @@
                             <tbody>
             `;
             
-            // Gerar linhas da tabela do 1º ao 35º mileádio
-            for (let i = 1; i <= 35; i++) {
-                const milleadioDate = addDays(birthDate, i * 1000);
-                const isCompleted = i <= milleadiosCompleted;
-                const isCurrent = i === milleadiosCompleted + 1;
-                
-                // Calcular idade aproximada na data do mileádio
-                const birthYear = birthDate.getFullYear();
-                const birthMonth = birthDate.getMonth();
-                const birthDay = birthDate.getDate();
-                
-                const milestoneYear = milleadioDate.getFullYear();
-                const milestoneMonth = milleadioDate.getMonth();
-                const milestoneDay = milleadioDate.getDate();
-                
-                let ageYears = milestoneYear - birthYear;
-                let ageMonths = milestoneMonth - birthMonth;
-                
-                // Ajustar se o dia ainda não chegou no mês
-                if (milestoneDay < birthDay) {
-                    ageMonths--;
-                }
-                
-                // Ajustar se os meses ficaram negativos
-                if (ageMonths < 0) {
-                    ageYears--;
-                    ageMonths += 12;
-                }
-                
-                const ageDisplay = ageMonths === 0 ? `${ageYears} anos` : 
-                    ageMonths === 1 ? `${ageYears} anos e ${ageMonths} mês` : 
-                    `${ageYears} anos e ${ageMonths} meses`;
-                
+            pageData.forEach(milestone => {
                 tableHTML += `
-                    <tr${isCurrent ? ' class="current-milestone"' : ''}>
+                    <tr${milestone.isCurrent ? ' class="current-milestone"' : ''}>
                         <td>
-                            <span style="font-weight: bold; color: #dc2626;">${i}º</span>
-                            ${isCurrent ? ' (Próximo)' : ''}
+                            <span style="font-weight: bold; color: #dc2626;">${milestone.number}º</span>
+                            ${milestone.isCurrent ? ' (Próximo)' : ''}
                         </td>
-                        <td>${formatDate(milleadioDate)}</td>
-                        <td>${ageDisplay}</td>
+                        <td>${formatDate(milestone.date)}</td>
+                        <td>${milestone.age}</td>
                         <td>
-                            <span class="milestone-status ${isCompleted ? 'completed' : 'future'}">
-                                ${isCompleted ? 'Concluído' : 'Futuro'}
+                            <span class="milestone-status ${milestone.isCompleted ? 'completed' : 'future'}">
+                                ${milestone.isCompleted ? 'Concluído' : 'Futuro'}
                             </span>
                         </td>
                     </tr>
                 `;
-            }
+            });
             
             tableHTML += `
                             </tbody>
                         </table>
                     </div>
+                    <div class="table-pagination">
+                        <button class="pagination-button" 
+                                onclick="changePage(-1)" 
+                                ${currentPage === 1 ? 'disabled' : ''}>
+                            ← Anterior
+                        </button>
+                        <span class="pagination-info">
+                            Página ${currentPage} de ${totalPages}
+                        </span>
+                        <button class="pagination-button" 
+                                onclick="changePage(1)" 
+                                ${currentPage === totalPages ? 'disabled' : ''}>
+                            Próxima →
+                        </button>
+                    </div>
                 </div>
             `;
             
             document.getElementById('milestonesList').innerHTML = tableHTML;
+        }
 
-            // Mensagem motivacional
-            document.getElementById('motivationalMessage').innerHTML = `
-                <div class="motivational-message">
-                    ${getMotivationalMessage(milleadiosCompleted, daysToNextMilleadio)}
-                </div>
-            `;
-
-            // Mostrar resultados
-            resultsDiv.style.display = 'block';
+        function changePage(direction) {
+            const totalPages = Math.ceil(allMilestones.length / rowsPerPage);
+            const newPage = currentPage + direction;
             
-            // Mostrar agradecimentos após os resultados
-            document.getElementById('acknowledgments').style.display = 'block';
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                renderMilestonesTable();
+                
+                // Scroll suave para a tabela
+                document.getElementById('milestonesList').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'nearest' 
+                });
+            }
+        }
+
+        // Funções de compartilhamento e exportação
+        function shareResults() {
+            const resultsDiv = document.getElementById('results');
+            
+            if (resultsDiv.style.display === 'none') {
+                showToast('Calcule seus mileádios primeiro!');
+                return;
+            }
+            
+            const daysLived = document.querySelector('.stat-value').textContent;
+            const milleadiosCompleted = document.querySelectorAll('.stat-value')[1].textContent;
+            
+            const shareText = `🎉 Já vivi ${daysLived} dias e completei ${milleadiosCompleted} mileádios! Calcule os seus em: ${window.location.href}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Meus Mileádios',
+                    text: shareText,
+                    url: window.location.href
+                }).then(() => {
+                    showToast('Compartilhado com sucesso!');
+                }).catch(() => {
+                    copyToClipboard(shareText);
+                });
+            } else {
+                copyToClipboard(shareText);
+            }
+        }
+
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            showToast('Copiado para a área de transferência!');
+        }
+
+        function printResults() {
+            const resultsDiv = document.getElementById('results');
+            
+            if (resultsDiv.style.display === 'none') {
+                showToast('Calcule seus mileádios primeiro!');
+                return;
+            }
+            
+            window.print();
+            showToast('Preparando impressão...');
+        }
+
+        function exportToCalendar() {
+            if (!userBirthDate) {
+                showToast('Calcule seus mileádios primeiro!');
+                return;
+            }
+            
+            const daysLived = calculateDaysBetween(userBirthDate, today);
+            const milleadiosCompleted = Math.floor(daysLived / 1000);
+            const nextMilleadioDate = addDays(userBirthDate, (milleadiosCompleted + 1) * 1000);
+            
+            // Formato para Google Calendar
+            const startDate = nextMilleadioDate.toISOString().replace(/-|:|\.\d\d\d/g, '');
+            const endDate = new Date(nextMilleadioDate.getTime() + 86400000).toISOString().replace(/-|:|\.\d\d\d/g, '');
+            
+            const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`Meu ${milleadiosCompleted + 1}º Mileádio!`)}&dates=${startDate}/${endDate}&details=${encodeURIComponent('Hoje completo mais 1000 dias de vida! 🎉')}`;
+            
+            window.open(calendarUrl, '_blank');
+            showToast('Abrindo Google Calendar...');
+        }
+
+        function saveAsPDF() {
+            const resultsDiv = document.getElementById('results');
+            
+            if (resultsDiv.style.display === 'none') {
+                showToast('Calcule seus mileádios primeiro!');
+                return;
+            }
+            
+            showToast('Use Ctrl+P (ou Cmd+P no Mac) e escolha "Salvar como PDF"');
+            setTimeout(() => {
+                window.print();
+            }, 1500);
         }
 
         // Calculadora inicia limpa - sem cálculo automático
         window.onload = function() {
-            // Não faz nada - aguarda o usuário clicar no botão
+            // Verificar se há parâmetros na URL para compartilhamento
+            const urlParams = new URLSearchParams(window.location.search);
+            const sharedDate = urlParams.get('date');
+            
+            if (sharedDate) {
+                document.getElementById('birthDate').value = sharedDate;
+                calculateMilleadios();
+                showToast('Dados compartilhados carregados!');
+            }
         };
-
-        // Remover o cálculo automático ao alterar data
-        // Agora só calcula quando clicar no botão
     </script>
 </body>
 </html>
