@@ -332,6 +332,7 @@
             text-align: center;
             font-size: 1.4em;
             background: linear-gradient(45deg, #dc2626, #991b1b);
+            border-radius: 15px 15px 0 0;
         }
 
         .milestones-table {
@@ -339,6 +340,7 @@
             border-collapse: collapse;
             margin: 0;
             background: var(--bg-white);
+            margin-top: -1px; /* Remove qualquer gap */
         }
 
         .milestones-table thead {
@@ -680,7 +682,7 @@
     <div id="toast" class="toast"></div>
 
     <div class="footer-disclaimer">
-        <p><em>Criado com Claude Sonnet 4.</em></p>
+        <p><em>Criado com Claude Opus 4.1</em></p>
     </div>
 
     <script>
@@ -970,19 +972,20 @@
             const totalPages = Math.ceil(allMilestones.length / rowsPerPage);
             
             let tableHTML = `
-                <div class="milestones-section">
-                    <h3 style="color: white;">🏆 Histórico de Mileádios (até o 40º)</h3>
-                    <div class="table-container">
-                        <table class="milestones-table">
-                            <thead style="background: linear-gradient(45deg, #dc2626, #991b1b);">
-                                <tr>
-                                    <th style="color: white;">Mileádio</th>
-                                    <th style="color: white;">Data</th>
-                                    <th style="color: white;">Idade</th>
-                                    <th style="color: white;">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                <div class="milestones-section" style="background: transparent; padding: 0; overflow: visible;">
+                    <div style="background: linear-gradient(45deg, #dc2626, #991b1b); border-radius: 15px 15px 0 0; padding: 20px; margin: 0;">
+                        <h3 style="color: white; margin: 0; text-align: center; font-size: 1.4em;">🏆 Histórico de Mileádios (até o 40º)</h3>
+                    </div>
+                    <table class="milestones-table" style="margin: 0; border-spacing: 0; border-radius: 0;">
+                        <thead style="background: linear-gradient(45deg, #dc2626, #991b1b);">
+                            <tr>
+                                <th style="color: white;">Mileádio</th>
+                                <th style="color: white;">Data</th>
+                                <th style="color: white;">Idade</th>
+                                <th style="color: white;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
             `;
             
             pageData.forEach(milestone => {
@@ -1006,8 +1009,7 @@
             tableHTML += `
                             </tbody>
                         </table>
-                    </div>
-                    <div class="table-pagination">
+                    <div class="table-pagination" style="margin: 0;">
                         <button class="pagination-button" 
                                 onclick="changePage(-1)" 
                                 ${currentPage === 1 ? 'disabled' : ''}>
